@@ -1,39 +1,62 @@
-# vue-project
+# Vue.js Weather App
 
-This template should help get you started developing with Vue 3 in Vite.
+This is a simple weather app built using Vue.js. It allows users to check the current weather conditions of various locations.
 
-## Recommended IDE Setup
+## Features
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+- View current weather conditions for different locations.
+- Search for weather by city name.
+- Display temperature in Celsius or Fahrenheit.
+- Responsive design for mobile and desktop.
 
-## Type Support for `.vue` Imports in TS
+## Technologies Used
 
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) to make the TypeScript language service aware of `.vue` types.
+- Vue.js
+- OpenWeatherMap API
+- HTML5
+- CSS3
 
-## Customize configuration
+## Installation
 
-See [Vite Configuration Reference](https://vitejs.dev/config/).
+1. Clone the repository:
 
-## Project Setup
+- git clone https://github.com/yourusername/vue-weather-app.git
 
-```sh
-npm install
-```
+2. Navigate to the project directory:
 
-### Compile and Hot-Reload for Development
+- cd vue-weather-app
 
-```sh
-npm run dev
-```
+3. Install dependencies:
 
-### Type-Check, Compile and Minify for Production
+- npm install
 
-```sh
-npm run build
-```
+4. Create a `.env` file in the root directory and add your OpenWeatherMap API key:
 
-### Lint with [ESLint](https://eslint.org/)
+- VUE_APP_API_KEY=your_api_key_here
 
-```sh
-npm run lint
-```
+5. Start the development server:
+
+- npm run serve
+
+6. Open your browser and navigate to `http://localhost:5173`.
+
+## Usage
+
+- Enter a city name in the search bar and press Enter or click the search button to view the weather for that location.
+- Toggle between Celsius and Fahrenheit by clicking on the temperature unit.
+- Explore the current weather conditions for different cities.
+
+## Contributing
+
+Contributions are welcome! If you'd like to contribute to this project, please follow these steps:
+
+1. Fork the repository.
+2. Create a new branch (`git checkout -b feature/your-feature`).
+3. Make your changes.
+4. Commit your changes (`git commit -am 'Add some feature'`).
+5. Push to the branch (`git push origin feature/your-feature`).
+6. Create a new Pull Request.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
