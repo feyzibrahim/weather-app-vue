@@ -1,14 +1,13 @@
 <script setup lang="ts">
-
-const title = "Hello world"
-
+import { RouterView } from 'vue-router';
+import HomeNavbar from './components/HomeNavbar.vue';
 </script>
 
 <template>
-  <header>
-    <div class="wrapper">
-      <h1 class="text-4xl">{{ title }}</h1>
-    </div>
-  </header>
+
+  <div class="flex flex-col min-h-screen bg-gray-500">
+    <HomeNavbar />
+    <RouterView />
+  </div>
 
 </template>
