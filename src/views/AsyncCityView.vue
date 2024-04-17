@@ -50,7 +50,9 @@ console.log("🚀 file: -> file: AsyncCityView.vue:32 -> weatherData", weatherDa
 </script>
 
 <template>
-    <div>
-
+    <div class="flex flex-col flex-1 items-center">
+        <div v-if="route.query.preview" class="text-white p-4 bg-gray-700 w-full text-center">
+            <p>You are currently previewing this city, click the "+" icon to start tracking this city</p>
+        </div>
     </div>
 </template>

@@ -29,7 +29,7 @@ const getSearchResults = () => {
 
 const previewCity = (data: any) => {
     const [city, state] = data.place_name.split(",");
-    router.push(`/weather/${state.replaceAll(" ", "")}/${city.replaceAll(" ", "")}?lat=${data.geometry.coordinates[1]}&lng=${data.geometry.coordinates[0]}`)
+    router.push(`/weather/${state.replaceAll(" ", "")}/${city.replaceAll(" ", "")}?lat=${data.geometry.coordinates[1]}&lng=${data.geometry.coordinates[0]}&preview=true`)
 }
 
 </script>
