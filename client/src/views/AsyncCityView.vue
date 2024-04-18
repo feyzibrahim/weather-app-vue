@@ -1,66 +1,16 @@
 <script setup lang="ts">
-import { fetchWeatherApi } from 'openmeteo';
 import { useRoute } from 'vue-router';
+import axios from "axios";
 
 const route = useRoute()
 
 const getWeatherData = async () => {
     try {
-        const params = {
-            latitude: [52.54],
-            longitude: [13.41],
-            current: 'temperature_2m,weather_code,wind_speed_10m,wind_direction_10m',
-            hourly: 'temperature_2m,precipitation',
-            daily: 'weather_code,temperature_2m_max,temperature_2m_min'
-        };
-        const url = 'https://api.open-meteo.com/v1/forecast';
-        const responses = await fetchWeatherApi(url, params);
+        const lat = route.query.lat as string
+        const lon = route.query.lng as string
+        const weatherData = await axios.get(`http://localhost:4000/api/weather/lat-lon?latitude=${lat}&longitude=${lon}`)
 
-        // Helper function to form time ranges
-        const range = (start: number, stop: number, step: number) =>
-            Array.from({ length: (stop - start) / step }, (_, i) => start + i * step);
-
-        // Process first location. Add a for-loop for multiple locations or weather models
-        const response = responses[0];
-
-        // Attributes for timezone and location
-        const utcOffsetSeconds = response.utcOffsetSeconds();
-        // const timezone = response.timezone();
-        // const timezoneAbbreviation = response.timezoneAbbreviation();
-        // const latitude = response.latitude();
-        // const longitude = response.longitude();
-
-        const current = response.current()!;
-        const hourly = response.hourly()!;
-        const daily = response.daily()!;
-
-        // Note: The order of weather variables in the URL query and the indices below need to match!
-        const weatherData = {
-            current: {
-                time: new Date((Number(current.time()) + utcOffsetSeconds) * 1000),
-                temperature: current.variables(0)!.value(), // Current is only 1 value, therefore `.value()`
-                weatherCode: current.variables(1)!.value(),
-                windSpeed: current.variables(2)!.value(),
-                windDirection: current.variables(3)!.value()
-            },
-            hourly: {
-                time: range(Number(hourly.time()), Number(hourly.timeEnd()), hourly.interval()).map(
-                    (t) => new Date((t + utcOffsetSeconds) * 1000)
-                ),
-                temperature: hourly.variables(0)!.valuesArray()!, // `.valuesArray()` get an array of floats
-                precipitation: hourly.variables(1)!.valuesArray()!,
-            },
-            daily: {
-                time: range(Number(daily.time()), Number(daily.timeEnd()), daily.interval()).map(
-                    (t) => new Date((t + utcOffsetSeconds) * 1000)
-                ),
-                weatherCode: daily.variables(0)!.valuesArray()!,
-                temperatureMax: daily.variables(1)!.valuesArray()!,
-                temperatureMin: daily.variables(2)!.valuesArray()!,
-            }
-        };
-
-        return weatherData;
+        return weatherData.data;
     } catch (error) {
         console.log("🚀 file: -> file: AsyncCityView.vue:11 -> getWeatherData -> error", error);
         throw error;
@@ -68,8 +18,7 @@ const getWeatherData = async () => {
 }
 
 
-const weatherData = await getWeatherData()
-console.log("🚀 file: -> file: AsyncCityView.vue:32 -> weatherData", weatherData)
+const weatherData: any = await getWeatherData()
 
 </script>
 
@@ -82,23 +31,71 @@ console.log("🚀 file: -> file: AsyncCityView.vue:32 -> weatherData", weatherDa
         <!-- Overview -->
         <div class="flex flex-col items-center text-white py-12">
             <h1 class="text-4xl mb-2">{{ route.params.city }}</h1>
-            <p class="text-sm mb-12">
+            <p class="text-sm mb-4">
                 {{
-                    new Date(weatherData.current.time).toLocaleDateString("en-us", {
+                    new Date(weatherData.current.timestamp).toLocaleDateString("en-us", {
                         weekday: "short", day: "2-digit",
                         month: "long"
                     })
                 }}
                 {{
-                    new Date(weatherData.current.time).toLocaleTimeString("en-us", {
+                    new Date(weatherData.current.timestamp).toLocaleTimeString("en-us", {
                         timeStyle: "short"
                     })
                 }}
             </p>
-            <p class="text-8xl mb-8">{{
+            <p class="text-8xl mb-4">{{
                 Math.round(weatherData.current.temperature)
                 }} &deg;
             </p>
+            <p>
+                Feels like {{ weatherData.current.feels_like }} &deg;
+            </p>
+            <p>
+                {{ weatherData.current.description }}
+            </p>
+            <img :src="`${weatherData.current.sky_icon}`" alt="icon">
+        </div>
+        <hr class="border-white border-opacity-10 border w-full">
+        <!-- Hourly Weather -->
+        <div class="max-w-screen-md w-full py-12">
+            <div class="mx-8 text-white">
+                <h2 class="mb-4">Hourly Weather</h2>
+                <div class="flex gap-10 overflow-x-scroll ">
+                    <div v-for="hourData in weatherData.hourly" :key="hourData._id"
+                        class="flex flex-col gap-4 items-center">
+                        <p class="whitespace-nowrap text-sm">
+                            {{
+                                new Date(hourData.timestamp).toLocaleTimeString("en-us", {
+                                    hour: "numeric"
+                                })
+                            }}
+                        </p>
+                        <img :src="`${hourData.sky_icon}`" alt="icon" class="w-7">
+                        <p>
+                            {{ Math.round(hourData.temperature) }} &deg;
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Weekly Weather -->
+        <div class="max-w-screen-md w-full py-12">
+
+            <div class="mx-8 text-white">
+                <h2>
+                    7 day forecast
+                </h2>
+                <div v-for="day in weatherData.daily" :key="day._id" class="flex items-center">
+                    <p class="flex-1">{{
+                        new Date(day.timestamp).toLocaleDateString("en-us", {
+                            weekday: "long"
+                        })
+                    }}</p>
+                    <img :src="`${day.sky_icon}`" alt="icon" class="h-8">
+                </div>
+            </div>
+
         </div>
     </div>
 </template>

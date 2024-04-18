@@ -3,8 +3,6 @@ import axios from 'axios';
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 
-const MAP_BOX_API = "pk.eyJ1IjoiZmFpei1pYnJhaGltIiwiYSI6ImNrZmt4aTRpMDFqZmwyeXMyd25iNGQ2ZHcifQ.wWgSKtfXkj6o3tBKw7FkRQ";
-
 const router = useRouter()
 const searchQuery = ref("")
 const queryTimeout: any = ref(null);
@@ -16,8 +14,8 @@ const getSearchResults = () => {
     queryTimeout.value = setTimeout(async () => {
         if (searchQuery.value !== "") {
             try {
-                const result = await axios.get(`https://api.mapbox.com/geocoding/v5/mapbox.places/${searchQuery.value}.json?access_token=${MAP_BOX_API}&types=place`)
-                mapBoxSearchResult.value = result.data.features;
+                const result = await axios.get(`http://localhost:4000/api/place/search?q=${searchQuery.value}`)
+                mapBoxSearchResult.value = result.data;
             } catch {
                 searchError.value = true
             }
@@ -28,8 +26,8 @@ const getSearchResults = () => {
 }
 
 const previewCity = (data: any) => {
-    const [city, state] = data.place_name.split(",");
-    router.push(`/weather/${state.replaceAll(" ", "")}/${city.replaceAll(" ", "")}?lat=${data.geometry.coordinates[1]}&lng=${data.geometry.coordinates[0]}&preview=true`)
+    const [place_name, city, state] = data.place_name.split(",");
+    router.push(`/weather/${state.replaceAll(" ", "")}/${city.replaceAll(" ", "")}?lat=${data.coordinates.latitude}&lng=${data.coordinates.longitude}&preview=true`)
 }
 
 </script>
