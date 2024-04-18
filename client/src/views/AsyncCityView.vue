@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useRoute } from 'vue-router';
 import axios from "axios";
+import { URL } from "../constant/link"
 
 const route = useRoute()
 
@@ -8,7 +9,7 @@ const getWeatherData = async () => {
     try {
         const lat = route.query.lat as string
         const lon = route.query.lng as string
-        const weatherData = await axios.get(`http://localhost:4000/api/weather/lat-lon?latitude=${lat}&longitude=${lon}`)
+        const weatherData = await axios.get(`${URL}/api/weather/lat-lon?latitude=${lat}&longitude=${lon}`)
 
         return weatherData.data;
     } catch (error) {
@@ -46,7 +47,7 @@ const weatherData: any = await getWeatherData()
             </p>
             <p class="text-8xl mb-4">{{
                 Math.round(weatherData.current.temperature)
-                }} &deg;
+            }} &deg;
             </p>
             <p>
                 Feels like {{ weatherData.current.feels_like }} &deg;

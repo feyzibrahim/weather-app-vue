@@ -2,6 +2,7 @@
 import axios from 'axios';
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
+import { URL } from "../constant/link"
 
 const router = useRouter()
 const searchQuery = ref("")
@@ -14,7 +15,7 @@ const getSearchResults = () => {
     queryTimeout.value = setTimeout(async () => {
         if (searchQuery.value !== "") {
             try {
-                const result = await axios.get(`http://localhost:4000/api/place/search?q=${searchQuery.value}`)
+                const result = await axios.get(`${URL}/api/place/search?q=${searchQuery.value}`)
                 mapBoxSearchResult.value = result.data;
             } catch {
                 searchError.value = true
