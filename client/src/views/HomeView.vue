@@ -3,6 +3,8 @@ import axios from 'axios';
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { URL } from "../constant/link"
+import CityList from '../components/CityList.vue';
+import CityCardSkelton from '@/components/CityCardSkelton.vue';
 
 const router = useRouter()
 const searchQuery = ref("")
@@ -35,7 +37,6 @@ const previewCity = (data: any) => {
 
 <template>
     <main class="container">
-
         <div class="pt-4 mb-8 relative">
             <input type="text" placeholder="Search..."
                 class="py-2 px-1 w-full bg-transparent border-b focus:border-gray-600 focus:outline-none"
@@ -51,6 +52,15 @@ const previewCity = (data: any) => {
                 </template>
             </ul>
         </div>
-
+        <div>
+            <div class="flex flex-col gap-4">
+                <Suspense>
+                    <CityList />
+                    <template #fallback>
+                        <CityCardSkelton />
+                    </template>
+                </Suspense>
+            </div>
+        </div>
     </main>
 </template>

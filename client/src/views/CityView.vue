@@ -1,6 +1,6 @@
 <script setup lang="ts">
+import CityViewSkelton from '@/components/CityViewSkelton.vue';
 import AsyncCityView from './AsyncCityView.vue';
-
 
 </script>
 
@@ -9,7 +9,7 @@ import AsyncCityView from './AsyncCityView.vue';
         <Suspense>
             <AsyncCityView />
             <template #fallback>
-                <p>Loading...</p>
+                <CityViewSkelton />
             </template>
         </Suspense>
     </main>

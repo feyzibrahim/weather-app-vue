@@ -1,12 +1,39 @@
 <script setup lang="ts">
-import { RouterLink } from 'vue-router';
+import { RouterLink, useRoute, useRouter } from 'vue-router';
 import BaseModal from './BaseModal.vue';
 import { ref } from "vue"
+import { nanoid } from 'nanoid';
 
 const modalActive: any = ref(null)
-
+const route = useRoute()
+const router = useRouter()
 const toggleModal = () => {
     modalActive.value = !modalActive.value;
+}
+
+const savedCities: any = ref([])
+const addCity = () => {
+    if (localStorage.getItem("savedCities")) {
+        savedCities.value = JSON.parse(localStorage.getItem("savedCities") as string)
+    }
+    const locationObj = {
+        id: nanoid(),
+        state: route.params.state,
+        city: route.params.city,
+        coords: {
+            lat: route.query.lat,
+            lng: route.query.lng,
+        }
+    };
+
+    savedCities.value.push(locationObj);
+    localStorage.setItem("savedCities", JSON.stringify(savedCities.value))
+
+    let query = Object.assign({}, route.query);
+    delete query.preview;
+    query.id = locationObj.id;
+
+    router.replace({ query });
 }
 
 </script>
@@ -24,8 +51,8 @@ const toggleModal = () => {
                 <i class="hover:opacity-60 cursor-pointer ">
                     <v-icon name="bi-info-circle-fill" @click="toggleModal" />
                 </i>
-                <i class="hover:opacity-60 cursor-pointer ">
-                    <v-icon name="bi-plus" scale="2" />
+                <i class="hover:opacity-60 cursor-pointer" v-if="route.query.preview">
+                    <v-icon name="bi-plus" scale="2" @click="addCity" />
                 </i>
             </div>
             <BaseModal :modalActive="modalActive" @close-modal="toggleModal">
